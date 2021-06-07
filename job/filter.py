@@ -47,4 +47,5 @@ class CategoriesFilter(django_filters.FilterSet):
 
     class Meta:
         model = JobRecruiter
-        fields = ['industry', 'job_title', 'location', 'experience', 'date']
+        fields = ['job_title']
+        # fields = ['industry', 'job_title', 'location', 'experience', 'date']

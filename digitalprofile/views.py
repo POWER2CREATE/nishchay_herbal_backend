@@ -73,6 +73,17 @@ class PersonalDetailViewSet(viewsets.ModelViewSet):
             self.perform_create(serializer.save(digital_profile=digital_profile, user=request.user))
             return Response(serializer.data, status=200)
 
+    def update(self, request, *args, **kwargs):
+        try:
+            user = User.objects.get(user=self.kwargs["pk"])
+        except ObjectDoesNotExist:
+            return Response({"DOES_NOT_EXIST": "Does not exist"}, status=400)
+        queryset = self.queryset.filter(user=user)
+        queryset = self.filter_queryset(queryset)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data, status=200)
+
 
 class SocialMediaLinksViewSet(viewsets.ModelViewSet):
     queryset = SocialMediaLinks.objects.all()

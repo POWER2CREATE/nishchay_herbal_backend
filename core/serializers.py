@@ -7,26 +7,28 @@ from django.contrib.auth.models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = models.User
-        fields = ('email', 'password', 'is_customer', 'is_admin', 'notification_token', 'passwordchanged')
+        fields = ('email', 'mobile', 'password', 'is_customer', 'is_admin', 'notification_token', 'passwordchanged')
+
 
 class CustomRegisterSerializer(RegisterSerializer):
     is_customer = serializers.BooleanField()
     is_admin = serializers.BooleanField()
-    notification_token = serializers.CharField(max_length = 64, allow_blank=True, allow_null=True)
+    notification_token = serializers.CharField(max_length=64, allow_blank=True, allow_null=True)
     passwordchanged = serializers.BooleanField()
+    mobile = serializers.CharField(max_length=12)
 
     class Meta:
         model = models.User
-        fields = ('email', 'password', 'is_customer', 'is_admin', 'notification_token','passwordchanged')
+        fields = ('email', 'mobile', 'password', 'is_customer', 'is_admin', 'notification_token', 'passwordchanged')
 
     def get_cleaned_data(self):
         return {
             'password1': self.validated_data.get('password1', ''),
             'password2': self.validated_data.get('password2', ''),
             'email': self.validated_data.get('email', ''),
+            'mobile': self.validated_data.get('mobile', ''),
             'is_customer': self.validated_data.get('is_customer', ''),
             'is_admin': self.validated_data.get('is_admin', ''),
             'notification_token': self.validated_data.get('notification_token', ''),
@@ -38,12 +40,14 @@ class CustomRegisterSerializer(RegisterSerializer):
         user = adapter.new_user(request)
         self.cleaned_data = self.get_cleaned_data()
         user.is_customer = self.cleaned_data.get('is_customer')
+        user.mobile = self.cleaned_data.get('mobile')
         user.is_admin = self.cleaned_data.get('is_admin')
         user.notification_token = self.cleaned_data.get('notification_token')
         user.passwordchanged = self.cleaned_data.get('passwordchanged')
         user.save()
         adapter.save_user(request, user, self)
         return user
+
 
 class TokenSerializer(serializers.ModelSerializer):
     user_type = serializers.SerializerMethodField()
@@ -52,7 +56,7 @@ class TokenSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Token
-        fields = ('key', 'user', 'user_type', 'notification_token','passwordchanged')
+        fields = ('key', 'user', 'user_type', 'notification_token', 'passwordchanged')
 
     def get_user_type(self, obj):
         serializer_data = UserSerializer(
@@ -64,7 +68,7 @@ class TokenSerializer(serializers.ModelSerializer):
             'is_customer': is_customer,
             'is_admin': is_admin,
         }
-    
+
     def get_notification_token(self, obj):
         serializer_data = UserSerializer(
             obj.user
@@ -78,10 +82,3 @@ class TokenSerializer(serializers.ModelSerializer):
         ).data
         passwordchanged = serializer_data.get('passwordchanged')
         return passwordchanged
-
-
-class UserProfileUpdateSerializer(serializers.ModelSerializer):
-    
-    class Meta:
-        model = models.User
-        fields = ['name', 'mobile', 'address', 'pincode', 'occupation', 'subscribed']

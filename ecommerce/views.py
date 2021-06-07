@@ -65,7 +65,24 @@ class ProductRatingReviewAPI(generics.RetrieveAPIView):
 
 class CartViewSet(viewsets.ModelViewSet):
     queryset = Cart.objects.all()
-    serializer_class = CartSerializer
+    serializer_class = AddToCartSerializer
+    permission_classes = [permissions.IsAuthenticated, IsCustomer, IsOwner]
+
+    def create(self, request, *args, **kwargs):
+        # if request.user.is_admin is False:
+        # return Response({"error": "You are not Admin"}, status=400)
+        if Cart.objects.filter(product=request.data.get('product'), user=request.user).exists():
+            return Response({"ALREADY_EXIST": "Item Already Exists in Cart"}, status=400)
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer.save(user=request.user))
+        return Response(serializer.data, status=200)
+
+
+class ViewMyCartViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Cart.objects.all()
+    serializer_class = ViewMyCartSerializer
     permission_classes = [permissions.IsAuthenticated, IsCustomer, IsOwner]
 
     def list(self, request, *args, **kwargs):
@@ -81,13 +98,8 @@ class CartViewSet(viewsets.ModelViewSet):
         else:
             return Response({"NO_ITEM": "Empty Cart"}, status=400)
 
-    def create(self, request, *args, **kwargs):
-        # if request.user.is_admin is False:
-        # return Response({"error": "You are not Admin"}, status=400)
-        if Cart.objects.filter(product=request.data.get('product'), user=request.user).exists():
-            return Response({"ALREADY_EXIST": "Item Already Exists in Cart"}, status=400)
 
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer.save(user=request.user))
-        return Response(serializer.data, status=200)
+class EditCartViewSet(viewsets.ModelViewSet):
+    queryset = Cart.objects.all()
+    serializer_class = EditCartSerializer
+    permission_classes = [permissions.IsAuthenticated, IsCustomer, IsOwner]

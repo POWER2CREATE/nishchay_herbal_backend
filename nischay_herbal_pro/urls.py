@@ -25,7 +25,7 @@ urlpatterns = [
     path('rest-auth/', include('rest_auth.urls')),
     path('rest-auth/registration/', include('rest_auth.registration.urls')),
     path('api/password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
-    path('core/', include('core.urls'), name='core'),
+    # path('core/', include('core.urls'), name='core'),
     path('job/', include('job.urls'), name='job'),
     path('ecommerce/', include('ecommerce.urls'), name='ecommerce'),
     path('digital-profile/', include('digitalprofile.urls'), name='digital-profile'),

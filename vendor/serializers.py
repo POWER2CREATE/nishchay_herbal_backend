@@ -4,7 +4,7 @@ from .models import *
 
 class VendorSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.ReadOnlyField()
-    user = serializers.ReadOnlyField(source='user.username')
+    user = serializers.ReadOnlyField(source='user.email')
     url = serializers.HyperlinkedIdentityField(view_name='vendor:viewaddeditvendor-detail')
 
     class Meta:
@@ -13,7 +13,7 @@ class VendorSerializer(serializers.HyperlinkedModelSerializer):
 
 
 """class BusinessInformationSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='user.username')
+    user = serializers.ReadOnlyField(source='user.email')
 
     # url = serializers.HyperlinkedIdentityField(view_name='ecommerce:viewadddeditproduct-detail')
 
@@ -23,7 +23,7 @@ class VendorSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class BankDetailsSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='user.username')
+    user = serializers.ReadOnlyField(source='user.email')
     # url = serializers.HyperlinkedIdentityField(view_name='ecommerce:viewadddeditproduct-detail')
 
     class Meta:
@@ -32,7 +32,7 @@ class BankDetailsSerializer(serializers.ModelSerializer):
 
 
 class VendorServicesSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='user.username')
+    user = serializers.ReadOnlyField(source='user.email')
     # url = serializers.HyperlinkedIdentityField(view_name='ecommerce:viewadddeditproduct-detail')
 
     class Meta:

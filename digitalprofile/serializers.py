@@ -1,27 +1,26 @@
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
 from .models import *
+from core.models import User
 
 
-class DigitalProfileSerializer(serializers.HyperlinkedModelSerializer):
-    id = serializers.ReadOnlyField()
-    user = serializers.ReadOnlyField(source='user.username')
-    url = serializers.HyperlinkedIdentityField(view_name="digitalprofile:editdigitalprofile-detail")  # CALL JOB DETAIL ROUTER
-
+class DigitalProfileSerializer(serializers.ModelSerializer):
+    # url = serializers.HyperlinkedIdentityField(view_name="digitalprofile:editdigitalprofile-detail")  # CALL JOB DETAIL ROUTER
+    user = serializers.ReadOnlyField(source='user.email')
     class Meta:
         model = DigitalProfile
-        fields = ['url', 'id', 'user', 'company_name', 'company_logo']
+        fields = ['id', 'user', 'company_name', 'company_logo']
 
 
 class DigitalProfileMiniSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = DigitalProfile
-        fields = ['id']
+         model = DigitalProfile
+         fields = ['id']
 
 
 class EditDigitalProfileSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='user.username')
+    user = serializers.ReadOnlyField(source='user.email')
     company_name = serializers.ReadOnlyField()
     approved = serializers.ReadOnlyField()
 
@@ -30,10 +29,10 @@ class EditDigitalProfileSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class PersonalDetailSerializer(serializers.HyperlinkedModelSerializer):
+class PersonalDetailSerializer(serializers.ModelSerializer):
     digital_profile = DigitalProfileMiniSerializer(read_only=True)
-    user = serializers.ReadOnlyField(source='user.username')
-    url = serializers.HyperlinkedIdentityField(view_name="digitalprofile:viewaddeditpersonaldetail-detail")
+    user = serializers.ReadOnlyField(source='user.email')
+    # url = serializers.HyperlinkedIdentityField(view_name="digitalprofile:viewaddeditpersonaldetail-detail")
 
     class Meta:
         model = PersonalDetail
@@ -42,7 +41,7 @@ class PersonalDetailSerializer(serializers.HyperlinkedModelSerializer):
 
 class SocialMediaLinksSerializer(serializers.HyperlinkedModelSerializer):
     digital_profile = DigitalProfileMiniSerializer(read_only=True)
-    user = serializers.ReadOnlyField(source='user.username')
+    user = serializers.ReadOnlyField(source='user.email')
     url = serializers.HyperlinkedIdentityField(view_name="digitalprofile:viewaddeditsocialmedialinks-detail")
 
     class Meta:
@@ -52,7 +51,7 @@ class SocialMediaLinksSerializer(serializers.HyperlinkedModelSerializer):
 
 class PaymentDetailSerializer(serializers.HyperlinkedModelSerializer):
     digital_profile = DigitalProfileMiniSerializer(read_only=True)
-    user = serializers.ReadOnlyField(source='user.username')
+    user = serializers.ReadOnlyField(source='user.email')
     url = serializers.HyperlinkedIdentityField(view_name="digitalprofile:viewaddeditpaymentdetail-detail")
 
     class Meta:
@@ -62,7 +61,7 @@ class PaymentDetailSerializer(serializers.HyperlinkedModelSerializer):
 
 class ServicesSerializer(serializers.HyperlinkedModelSerializer):
     digital_profile = DigitalProfileMiniSerializer(read_only=True)
-    user = serializers.ReadOnlyField(source='user.username')
+    user = serializers.ReadOnlyField(source='user.email')
     url = serializers.HyperlinkedIdentityField(view_name="digitalprofile:viewaddeditservices-detail")
 
     class Meta:
@@ -72,7 +71,7 @@ class ServicesSerializer(serializers.HyperlinkedModelSerializer):
 
 class EcommerceSerializer(serializers.HyperlinkedModelSerializer):
     digital_profile = DigitalProfileMiniSerializer(read_only=True)
-    user = serializers.ReadOnlyField(source='user.username')
+    user = serializers.ReadOnlyField(source='user.email')
     url = serializers.HyperlinkedIdentityField(view_name="digitalprofile:viewaddeditecommerce-detail")
 
     class Meta:
@@ -82,7 +81,7 @@ class EcommerceSerializer(serializers.HyperlinkedModelSerializer):
 
 class GallerySerializer(serializers.HyperlinkedModelSerializer):
     digital_profile = DigitalProfileMiniSerializer(read_only=True)
-    user = serializers.ReadOnlyField(source='user.username')
+    user = serializers.ReadOnlyField(source='user.email')
     url = serializers.HyperlinkedIdentityField(view_name="digitalprofile:viewaddeditgallery-detail")
 
     class Meta:
@@ -91,7 +90,7 @@ class GallerySerializer(serializers.HyperlinkedModelSerializer):
 
 
 class ApproveDigitalProfileSerializer(serializers.HyperlinkedModelSerializer):
-    user = serializers.ReadOnlyField(source='user.username')
+    user = serializers.ReadOnlyField(source='user.email')
     url = serializers.HyperlinkedIdentityField(view_name="digitalprofile:approvedigitalprofiledetail-detail")
     company_name = serializers.ReadOnlyField()
 
@@ -101,7 +100,7 @@ class ApproveDigitalProfileSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class ApproveDigitalProfileDetailSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='user.username')
+    user = serializers.ReadOnlyField(source='user.email')
     company_name = serializers.ReadOnlyField()
 
     class Meta:
@@ -146,6 +145,7 @@ class GalleryMiniSerializer(serializers.ModelSerializer):
 
 
 class MyDigitalProfileSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source='user.email')
     personalDetails = serializers.SerializerMethodField(read_only=True)
     socialMediaLinks = serializers.SerializerMethodField(read_only=True)
     paymentDetails = serializers.SerializerMethodField(read_only=True)
@@ -158,7 +158,10 @@ class MyDigitalProfileSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def get_personalDetails(self, obj):
-        detail = PersonalDetail.objects.get(user=obj.user.id)
+        try:
+            detail = PersonalDetail.objects.get(user=obj.user.id)
+        except ObjectDoesNotExist:
+            return 'Please Add Personal Details'
         serializer = PersonalDetailMiniSerializer(detail)
         return serializer.data
 
@@ -166,7 +169,7 @@ class MyDigitalProfileSerializer(serializers.ModelSerializer):
         try:
             detail = SocialMediaLinks.objects.get(user=obj.user.id)
         except ObjectDoesNotExist:
-            return None
+            return 'Please Add Social Media Links'
         serializer = SocialMediaLinksMiniSerializer(detail)
         return serializer.data
 
@@ -174,7 +177,7 @@ class MyDigitalProfileSerializer(serializers.ModelSerializer):
         try:
             detail = PaymentDetail.objects.get(user=obj.user.id)
         except ObjectDoesNotExist:
-            return None
+            return 'Personal Add Payment Details'
         serializer = PaymentDetailMiniSerializer(detail)
         return serializer.data
 
@@ -182,7 +185,7 @@ class MyDigitalProfileSerializer(serializers.ModelSerializer):
         try:
             detail = Services.objects.filter(user=obj.user.id)
         except ObjectDoesNotExist:
-            return None
+            return 'Personal Add Services'
         serializer = ServicesMiniSerializer(detail, many=True)
         return serializer.data
 
@@ -190,7 +193,7 @@ class MyDigitalProfileSerializer(serializers.ModelSerializer):
         try:
             detail = Ecommerce.objects.filter(user=obj.user.id)
         except ObjectDoesNotExist:
-            return None
+            return 'Personal Add Ecommerce Products'
         serializer = EcommerceMiniSerializer(detail, many=True)
         return serializer.data
 
@@ -198,6 +201,6 @@ class MyDigitalProfileSerializer(serializers.ModelSerializer):
         try:
             detail = Gallery.objects.filter(user=obj.user.id)
         except ObjectDoesNotExist:
-            return None
+            return 'Personal Add Images in Gallery'
         serializer = GalleryMiniSerializer(detail, many=True)
         return serializer.data

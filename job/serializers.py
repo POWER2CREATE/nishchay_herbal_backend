@@ -3,20 +3,18 @@ from .models import *
 from core.models import User
 
 
-class AllJobsSerializer(serializers.HyperlinkedModelSerializer):
+class AllJobsSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
-    user = serializers.ReadOnlyField(source='user.username')
-    url = serializers.HyperlinkedIdentityField(view_name="job:viewalljob-detail")  # CALL JOB DETAIL ROUTER
+    user = serializers.ReadOnlyField(source='user.email')
 
     class Meta:
         model = JobRecruiter
-        # fields = ['url', 'id', 'user', 'job_title', 'company_name', 'location', 'salary_from', 'salary_to', 'date']
         fields = '__all__'
 
 
 class JobDetailSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
-    user = serializers.ReadOnlyField(source='user.username')
+    user = serializers.ReadOnlyField(source='user.email')
     company_name = serializers.ReadOnlyField()
     job_title = serializers.ReadOnlyField()
     location = serializers.ReadOnlyField()
@@ -35,7 +33,8 @@ class JobDetailSerializer(serializers.ModelSerializer):
 
 class JobRecruiterSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.ReadOnlyField()
-    user = serializers.ReadOnlyField(source='user.username')
+    # user = serializers.ReadOnlyField(source='user.email')
+    user = serializers.user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     url = serializers.HyperlinkedIdentityField(view_name="job:editviewjobdetail-detail")  # CALL JOB DETAIL ROUTER
     active = serializers.ReadOnlyField()
     approved = serializers.ReadOnlyField()
@@ -56,9 +55,7 @@ class AppliedJobMiniDetailSerializer(serializers.HyperlinkedModelSerializer):
 
 class JobSeekerSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
-    user = serializers.ReadOnlyField(source='user.username')
-    # url = serializers.HyperlinkedIdentityField(view_name="job:editviewjobdetail-detail")  # CALL VIEW APPLY JOB ROUTER
-    # job = serializers.HyperlinkedRelatedField(queryset=JobRecruiter.objects.all(), view_name="job:editviewjobdetail-detail")  # PRINT URL OF USER APPLIED JOB DETAIL THROUGH VIEW ADD JOB ROUTER
+    user = serializers.user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
 
     class Meta:
         model = JobSeeker
@@ -68,7 +65,7 @@ class JobSeekerSerializer(serializers.ModelSerializer):
 class UserAppliedJobSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.ReadOnlyField()
     # url = serializers.HyperlinkedIdentityField(view_name="job:editviewjobdetail-detail")  # CALL VIEW APPLY JOB ROUTER
-    user = serializers.ReadOnlyField(source='user.username')
+    user = serializers.ReadOnlyField(source='user.email')
     job = AppliedJobMiniDetailSerializer()
 
     class Meta:
@@ -79,7 +76,7 @@ class UserAppliedJobSerializer(serializers.HyperlinkedModelSerializer):
 class UserSavedJobSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.ReadOnlyField()
     url = serializers.HyperlinkedIdentityField(view_name="job:viewalljob-detail")  # CALL VIEW APPLY JOB ROUTER
-    user = serializers.ReadOnlyField(source='user.username')
+    user = serializers.ReadOnlyField(source='user.email')
     job = AppliedJobMiniDetailSerializer()
 
     class Meta:
@@ -88,7 +85,7 @@ class UserSavedJobSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class AllJobApplicationsSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='user.username')
+    user = serializers.ReadOnlyField(source='user.email')
 
     class Meta:
         model = JobSeeker
@@ -96,7 +93,7 @@ class AllJobApplicationsSerializer(serializers.ModelSerializer):
 
 
 class ViewHireUserSerializer(serializers.HyperlinkedModelSerializer):
-    user = serializers.ReadOnlyField(source='user.username')
+    user = serializers.ReadOnlyField(source='user.email')
     url = serializers.HyperlinkedIdentityField(view_name="job:viewalljobapplications-detail")  # CALL JOB DETAIL ROUTER
     active = serializers.ReadOnlyField()
     approved = serializers.ReadOnlyField()
@@ -106,12 +103,15 @@ class ViewHireUserSerializer(serializers.HyperlinkedModelSerializer):
         fields = '__all__'
 
 
-class ViewJobApplicationsSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='user.name')
+class ViewJobApplicationsSerializer(serializers.HyperlinkedModelSerializer):
+    id = serializers.ReadOnlyField()
+    user = serializers.ReadOnlyField(source='user.email')
+    job = serializers.PrimaryKeyRelatedField(queryset=JobRecruiter.objects.all())
+    url = serializers.HyperlinkedIdentityField(view_name="job:updatejobapplication-detail")
 
     class Meta:
         model = JobSeeker
-        fields = '__all__'
+        fields = ['url' ,'id', 'job', 'user', 'resume', 'date', 'saved', 'applied', 'status']
 
 
 class UpdateJobApplicationSerializer(serializers.ModelSerializer):

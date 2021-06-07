@@ -40,11 +40,11 @@ STATUS = (
 
 class JobRecruiter(models.Model):
     user = models.ForeignKey('core.User', on_delete=models.PROTECT)
-    company_name = models.CharField(max_length=80)
-    job_title = models.CharField(max_length=80)
-    location = models.CharField(max_length=50)
+    company_name = models.CharField(max_length=60)
+    job_title = models.CharField(max_length=60)
+    location = models.CharField(max_length=60)
     your_name = models.CharField(max_length=50)
-    phone = models.CharField(max_length=12)
+    phone = models.CharField(max_length=13)
     industry = models.CharField(max_length=80, choices=INDUSTRY)
     experience = models.CharField(max_length=20)
     salary_from = models.CharField(max_length=20)

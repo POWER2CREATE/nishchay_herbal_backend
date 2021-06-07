@@ -14,10 +14,9 @@ router.register('apply-save-job', views.JobSeekerViewSet, basename='applysavejob
 router.register('view-applied-job', views.UserAppliedJobViewSet, basename='viewappliedjob')  # FOR JOB SEEKERS
 router.register('view-saved-job', views.UserSavedJobViewSet, basename='viewsavedjob')  # FOR JOB SEEKERS
 router.register('edit-view-job-detail', views.JobDetailedViewSet, basename='editviewjobdetail')  # FOR BOTH
-
+router.register('job-application', views.ViewJobApplicationViewSet, basename='viewjobapplications')  # USE /id for check specific Job Applications
+router.register('job-application-update', views.UpdateJobApplicationViewSet, basename='updatejobapplication')  # USE /id for update specific Job Applications
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('job-application/<int:id>', views.ViewJobApplicationAPI.as_view(), name='jobapplication'),
-    path('job-application-update/<int:id>', views.UpdateJobApplicationAPI.as_view(), name='jobapplicationupdate'),
 ]

@@ -4,7 +4,7 @@ from .models import *
 
 class DigitalDiarySerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.ReadOnlyField()
-    user = serializers.ReadOnlyField(source='user.username')
+    user = serializers.ReadOnlyField(source='user.email')
     url = serializers.HyperlinkedIdentityField(view_name="digitalfacilities:viewadddeditdigitaldiary-detail")  # CALL JOB DETAIL ROUTER
     days_left = serializers.ReadOnlyField()
 
@@ -15,7 +15,7 @@ class DigitalDiarySerializer(serializers.HyperlinkedModelSerializer):
 
 class DigitalGreetingCardSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.ReadOnlyField()
-    user = serializers.ReadOnlyField(source='user.username')
+    user = serializers.ReadOnlyField(source='user.email')
     url = serializers.HyperlinkedIdentityField(view_name="digitalfacilities:viewadddeditdigitalgreetingcard-detail")  # CALL JOB DETAIL ROUTER
 
     class Meta:
@@ -25,7 +25,7 @@ class DigitalGreetingCardSerializer(serializers.HyperlinkedModelSerializer):
 
 class DigitalVisitingCardSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.ReadOnlyField()
-    user = serializers.ReadOnlyField(source='user.username')
+    user = serializers.ReadOnlyField(source='user.email')
     url = serializers.HyperlinkedIdentityField(view_name="digitalfacilities:viewadddeditdigitalvisitingcard-detail")  # CALL JOB DETAIL ROUTER
 
     class Meta:
