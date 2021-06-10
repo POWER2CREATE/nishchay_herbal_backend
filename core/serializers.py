@@ -6,6 +6,7 @@ from . import models
 from django.contrib.auth.models import User
 
 
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.User
@@ -82,3 +83,9 @@ class TokenSerializer(serializers.ModelSerializer):
         ).data
         passwordchanged = serializer_data.get('passwordchanged')
         return passwordchanged
+
+
+class AllUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.User
+        fields = '__all__'

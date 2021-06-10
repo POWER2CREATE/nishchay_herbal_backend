@@ -32,7 +32,7 @@ class DigitalDiaryViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer.save(user=request.user))
+        self.perform_create(serializer.save())
         return Response(serializer.data, status=200)
 
 
@@ -52,7 +52,7 @@ class DigitalGreetingCardViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        serializer.save()
 
 
 class DigitalVisitingCardViewSet(viewsets.ModelViewSet):
@@ -71,4 +71,9 @@ class DigitalVisitingCardViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        serializer.save()
+
+
+class AllUserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = AllUserSerializer

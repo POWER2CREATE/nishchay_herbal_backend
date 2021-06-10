@@ -9,6 +9,7 @@ router = routers.DefaultRouter()
 router.register('view-add-edit-digital-diary', DigitalDiaryViewSet, basename='viewadddeditdigitaldiary')
 router.register('view-add-edit-digital-greeting-card', DigitalGreetingCardViewSet, basename='viewadddeditdigitalgreetingcard')
 router.register('view-add-edit-digital-visiting-card', DigitalVisitingCardViewSet, basename='viewadddeditdigitalvisitingcard')
+router.register('my-users', AllUserViewSet, basename='myuser')
 
 urlpatterns = [
     path('', include(router.urls)),

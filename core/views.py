@@ -28,3 +28,8 @@ class UserSerializerAPIViewSet(viewsets.ModelViewSet):
             permission_classes = [IsAdminUser]
             # permission_classes = [IsAuthenticated]
         return [permission() for permission in permission_classes]
+
+
+class AllUserViewSet(viewsets.ModelViewSet):
+    queryset = models.User.objects.all()
+    serializer_class = serializers.AllUserSerializer
