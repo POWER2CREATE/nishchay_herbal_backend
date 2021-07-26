@@ -25,7 +25,25 @@ class AllJobViewSet(viewsets.ReadOnlyModelViewSet):
     filterset_class = CategoriesFilter
 
     def list(self, request, *args, **kwargs):
-        queryset = self.queryset.filter(approved=True, active=True).order_by('date')
+        queryset = self.queryset.filter(
+            approved=True, active=True).order_by('date')
+        job_title = self.request.query_params.get('job_title', None)
+        if job_title is not None:
+            queryset = queryset.filter(job_title__icontains=job_title)
+        company_name = self.request.query_params.get('company_name', None)
+        if company_name is not None:
+            queryset = queryset.filter(company_name__icontains=company_name)
+        location = self.request.query_params.get('location', None)
+        if location is not None:
+            queryset = queryset.filter(location__icontains=location)
+        experience = self.request.query_params.get('experience', None)
+        if experience is not None:
+            queryset = queryset.filter(experience__icontains=experience)
+        salary = self.request.query_params.get('salary', None)
+        if salary is not None:
+            queryset = queryset.filter(
+                salary_from__lte=salary, salary_to__gte=salary)
+
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -39,7 +57,8 @@ class JobDetailedViewSet(viewsets.ModelViewSet):
 class JobRecruiterViewSet(viewsets.ModelViewSet):
     queryset = JobRecruiter.objects.all()
     serializer_class = JobRecruiterSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwner, SubscribedUser]
+    permission_classes = [
+        permissions.IsAuthenticatedOrReadOnly, IsOwner, SubscribedUser]
 
     def list(self, request, *args, **kwargs):
         try:
@@ -60,7 +79,8 @@ class JobSeekerViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
 
-        job = JobSeeker.objects.filter(user=self.request.user, job=self.request.data['job'], applied=True)
+        job = JobSeeker.objects.filter(
+            user=self.request.user, job=self.request.data['job'], applied=True)
 
         if job.exists():
             return Response({"error": "Already Applied"}, status=400)
@@ -81,7 +101,8 @@ class UserAppliedJobViewSet(viewsets.ReadOnlyModelViewSet):
             user = User.objects.get(id=request.user.id)
         except ObjectDoesNotExist:
             return Response({"DOES_NOT_EXIST": "User Does not exist"}, status=400)
-        queryset = self.queryset.filter(user=user, applied=True).order_by('-date')
+        queryset = self.queryset.filter(
+            user=user, applied=True).order_by('-date')
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -96,7 +117,8 @@ class UserSavedJobViewSet(viewsets.ReadOnlyModelViewSet):
             user = User.objects.get(id=request.user.id)
         except ObjectDoesNotExist:
             return Response({"DOES_NOT_EXIST": "User Does not exist"}, status=400)
-        queryset = self.queryset.filter(user=user, applied=False, saved=True).order_by('-date')
+        queryset = self.queryset.filter(
+            user=user, applied=False, saved=True).order_by('-date')
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -158,8 +180,9 @@ class UpdateJobApplicationViewSet(viewsets.ModelViewSet):
         try:
             instance = self.queryset.get(id=self.kwargs["pk"])
         except ObjectDoesNotExist:
-            return Response({"DOES_NOT_EXIST":"Does not exist"}, status=400)
-        serializer = self.get_serializer(instance, data=request.data, partial=True)
+            return Response({"DOES_NOT_EXIST": "Does not exist"}, status=400)
+        serializer = self.get_serializer(
+            instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=200)
