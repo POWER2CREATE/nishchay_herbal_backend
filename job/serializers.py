@@ -57,6 +57,11 @@ class JobSeekerSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
     user = serializers.user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
 
+    def validate(self, data):
+        if data['applied'] and data['resume'] is None:
+            raise serializers.ValidationError("Resume is required to apply can't be None.")
+        return data
+
     class Meta:
         model = JobSeeker
         fields = ['id', 'job', 'user', 'resume', 'date', 'saved', 'applied']

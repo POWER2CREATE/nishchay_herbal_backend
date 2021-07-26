@@ -1,4 +1,6 @@
 from django.db import models
+import os
+from django.core.exceptions import ValidationError
 
 # Create your models here.
 
@@ -37,6 +39,11 @@ STATUS = (
     ("Shortlisted", "Shortlisted"),
 )
 
+def validate_file_extension(value):
+    ext = os.path.splitext(value.name)[1]  # [0] returns path+filename
+    valid_extensions = ['.pdf', '.doc', '.docx']
+    if not ext.lower() in valid_extensions:
+        raise ValidationError('Unsupported file extension it should be pdf or doc.')
 
 class JobRecruiter(models.Model):
     user = models.ForeignKey('core.User', on_delete=models.PROTECT)
@@ -61,7 +68,7 @@ class JobRecruiter(models.Model):
 
 class JobSeeker(models.Model):
     user = models.ForeignKey('core.User', on_delete=models.PROTECT)
-    resume = models.FileField(upload_to="Job/Resume/")
+    resume = models.FileField(upload_to="Job/Resume/", validators=[validate_file_extension], blank=True, null=True)
     job = models.ForeignKey('job.JobRecruiter', on_delete=models.PROTECT)
     date = models.DateField(auto_now_add=True)
     saved = models.BooleanField(default=False)
