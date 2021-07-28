@@ -75,14 +75,15 @@ class PersonalDetailViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         try:
-            user = User.objects.get(user=self.kwargs["pk"])
+            personal_det = PersonalDetail.objects.get(id=self.kwargs["pk"])
         except ObjectDoesNotExist:
-            return Response({"DOES_NOT_EXIST": "Does not exist"}, status=400)
-        queryset = self.queryset.filter(user=user)
-        queryset = self.filter_queryset(queryset)
+            return Response({"DOES_NOT_EXIST": "Personal detail Does not exist"}, status=400)
 
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data, status=200)
+        serializer = PersonalDetailSerializer(personal_det, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class SocialMediaLinksViewSet(viewsets.ModelViewSet):
