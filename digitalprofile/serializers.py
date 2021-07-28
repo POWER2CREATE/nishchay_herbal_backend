@@ -7,6 +7,7 @@ from core.models import User
 class DigitalProfileSerializer(serializers.ModelSerializer):
     # url = serializers.HyperlinkedIdentityField(view_name="digitalprofile:editdigitalprofile-detail")  # CALL JOB DETAIL ROUTER
     user = serializers.ReadOnlyField(source='user.email')
+
     class Meta:
         model = DigitalProfile
         fields = ['id', 'user', 'company_name', 'company_logo']
@@ -15,8 +16,8 @@ class DigitalProfileSerializer(serializers.ModelSerializer):
 class DigitalProfileMiniSerializer(serializers.ModelSerializer):
 
     class Meta:
-         model = DigitalProfile
-         fields = ['id']
+        model = DigitalProfile
+        fields = ['id']
 
 
 class EditDigitalProfileSerializer(serializers.ModelSerializer):
@@ -42,7 +43,8 @@ class PersonalDetailSerializer(serializers.ModelSerializer):
 class SocialMediaLinksSerializer(serializers.HyperlinkedModelSerializer):
     digital_profile = DigitalProfileMiniSerializer(read_only=True)
     user = serializers.ReadOnlyField(source='user.email')
-    url = serializers.HyperlinkedIdentityField(view_name="digitalprofile:viewaddeditsocialmedialinks-detail")
+    url = serializers.HyperlinkedIdentityField(
+        view_name="digitalprofile:viewaddeditsocialmedialinks-detail")
 
     class Meta:
         model = SocialMediaLinks
@@ -52,7 +54,8 @@ class SocialMediaLinksSerializer(serializers.HyperlinkedModelSerializer):
 class PaymentDetailSerializer(serializers.HyperlinkedModelSerializer):
     digital_profile = DigitalProfileMiniSerializer(read_only=True)
     user = serializers.ReadOnlyField(source='user.email')
-    url = serializers.HyperlinkedIdentityField(view_name="digitalprofile:viewaddeditpaymentdetail-detail")
+    url = serializers.HyperlinkedIdentityField(
+        view_name="digitalprofile:viewaddeditpaymentdetail-detail")
 
     class Meta:
         model = PaymentDetail
@@ -62,7 +65,8 @@ class PaymentDetailSerializer(serializers.HyperlinkedModelSerializer):
 class ServicesSerializer(serializers.HyperlinkedModelSerializer):
     digital_profile = DigitalProfileMiniSerializer(read_only=True)
     user = serializers.ReadOnlyField(source='user.email')
-    url = serializers.HyperlinkedIdentityField(view_name="digitalprofile:viewaddeditservices-detail")
+    url = serializers.HyperlinkedIdentityField(
+        view_name="digitalprofile:viewaddeditservices-detail")
 
     class Meta:
         model = Services
@@ -72,7 +76,8 @@ class ServicesSerializer(serializers.HyperlinkedModelSerializer):
 class EcommerceSerializer(serializers.HyperlinkedModelSerializer):
     digital_profile = DigitalProfileMiniSerializer(read_only=True)
     user = serializers.ReadOnlyField(source='user.email')
-    url = serializers.HyperlinkedIdentityField(view_name="digitalprofile:viewaddeditecommerce-detail")
+    url = serializers.HyperlinkedIdentityField(
+        view_name="digitalprofile:viewaddeditecommerce-detail")
 
     class Meta:
         model = Ecommerce
@@ -82,7 +87,8 @@ class EcommerceSerializer(serializers.HyperlinkedModelSerializer):
 class GallerySerializer(serializers.HyperlinkedModelSerializer):
     digital_profile = DigitalProfileMiniSerializer(read_only=True)
     user = serializers.ReadOnlyField(source='user.email')
-    url = serializers.HyperlinkedIdentityField(view_name="digitalprofile:viewaddeditgallery-detail")
+    url = serializers.HyperlinkedIdentityField(
+        view_name="digitalprofile:viewaddeditgallery-detail")
 
     class Meta:
         model = Gallery
@@ -91,7 +97,8 @@ class GallerySerializer(serializers.HyperlinkedModelSerializer):
 
 class ApproveDigitalProfileSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.ReadOnlyField(source='user.email')
-    url = serializers.HyperlinkedIdentityField(view_name="digitalprofile:approvedigitalprofiledetail-detail")
+    url = serializers.HyperlinkedIdentityField(
+        view_name="digitalprofile:approvedigitalprofiledetail-detail")
     company_name = serializers.ReadOnlyField()
 
     class Meta:

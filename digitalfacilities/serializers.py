@@ -38,3 +38,6 @@ class AllUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = '__all__'
+
+class LeftTimeSerializers(serializers.Serializer):
+    days_left = serializers.ReadOnlyField()

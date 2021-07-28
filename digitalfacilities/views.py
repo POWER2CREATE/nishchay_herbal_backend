@@ -8,6 +8,8 @@ from core.models import User
 from core.permissions import *
 from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
+from django.http import Http404
+from rest_framework.views import APIView
 
 
 # Create your views here.
@@ -77,3 +79,23 @@ class DigitalVisitingCardViewSet(viewsets.ModelViewSet):
 class AllUserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = AllUserSerializer
+
+import datetime
+class LeftTimeDigital(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsOwner, SubscribedUser]
+    http_method_names = ['get']
+
+    def get_object(self, pk):
+        try:
+            return DigitalDiary.objects.get(pk=pk)
+        except DigitalDiary.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        queryset = self.get_object(pk)
+        remaining = (datetime.datetime.now().date() - self.queryset.expiry_date.date()).days
+        serializer = LeftTimeSerializers(remaining)
+        return Response(serializer.data)
+
+        
+
