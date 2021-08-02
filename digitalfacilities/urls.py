@@ -13,5 +13,6 @@ router.register('my-users', AllUserViewSet, basename='myuser')
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('time-left/<int:id>/', LeftTimeDigital, name='timeleftview'),
+    path('time-left/<int:pk>/', LeftTimeDigitalDiary.as_view(), name='timeleftview'),
+    path('digital-profile-visiting/', VisitingCardAPI.as_view(), name='visitingView'),
 ]

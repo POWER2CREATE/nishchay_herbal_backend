@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import *
 from core.models import User
+import datetime
 
 
 class DigitalDiarySerializer(serializers.HyperlinkedModelSerializer):
@@ -40,4 +41,14 @@ class AllUserSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class LeftTimeSerializers(serializers.Serializer):
-    days_left = serializers.ReadOnlyField()
+    left_days = serializers.SerializerMethodField(read_only=True)
+
+    def get_left_days(self, obj):
+        today = datetime.date.today()
+        delt = str(obj.start_date-today)
+        return delt.split(',')[0]        
+
+class VisitingSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = DigitalVisitingCard
+        fields = '__all__'

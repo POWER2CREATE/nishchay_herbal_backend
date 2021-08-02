@@ -1,5 +1,6 @@
 from django.db import models
-
+from django.core.exceptions import ValidationError
+from datetime import date
 # Create your models here.
 
 
@@ -19,12 +20,16 @@ VISITING_CARD_CATEGORY = (
     ("My Cards", "My Cards"),
 )
 
+def no_past(value):
+    today = date.today()
+    if value < today:
+        raise ValidationError('Please enter a future date, Start Date can\'t be a past date...')
 
 class DigitalDiary(models.Model):
     user = models.ForeignKey('core.User', on_delete=models.PROTECT)
     title = models.CharField(max_length=80, blank=True)
     image = models.ImageField(upload_to="DigitalFacilities/DigitalDiary", blank=True)
-    start_date = models.DateField()
+    start_date = models.DateField(validators=[no_past])
     description = models.TextField()
     reminder = models.BooleanField(default=True)
     days_left = models.IntegerField(default=0)
