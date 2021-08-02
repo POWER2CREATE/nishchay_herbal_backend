@@ -10,6 +10,7 @@ from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from django.http import Http404
 from rest_framework.views import APIView
+from digitalprofile import models as digipromodel
 
 
 # Create your views here.
@@ -81,21 +82,37 @@ class AllUserViewSet(viewsets.ModelViewSet):
     serializer_class = AllUserSerializer
 
 import datetime
-class LeftTimeDigital(APIView):
-    permission_classes = [permissions.IsAuthenticated, IsOwner, SubscribedUser]
-    http_method_names = ['get']
+class LeftTimeDigitalDiary(APIView):
+    queryset = DigitalDiary.objects.all()
+    serializer_class = LeftTimeSerializers
+    permission_classes = [permissions.IsAuthenticated,]
 
     def get_object(self, pk):
         try:
-            return DigitalDiary.objects.get(pk=pk)
+            return DigitalDiary.objects.get(id=pk)
         except DigitalDiary.DoesNotExist:
             raise Http404
 
     def get(self, request, pk, format=None):
         queryset = self.get_object(pk)
-        remaining = (datetime.datetime.now().date() - self.queryset.expiry_date.date()).days
-        serializer = LeftTimeSerializers(remaining)
+
+        serializer = self.serializer_class(queryset)
         return Response(serializer.data)
 
-        
+class VisitingCardAPI(APIView):
+    serializers = VisitingSerializers
+    permission_classes = [permissions.IsAuthenticated,]
+
+    def get_object(self, pk):
+        try:
+            return digipromodel.DigitalProfile.objects.get(user=pk)
+        except digipromodel.DigitalProfile.DoesNotExist:
+            raise Http404
+
+    def get(self, request, format=None):
+        ins = self.get_object(request.user)
+        queryset = DigitalVisitingCard.objects.get(user=request.user)
+        serializer = self.serializer_class(queryset)
+        return Response(serializer)
+
 
