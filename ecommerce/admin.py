@@ -15,3 +15,7 @@ class RatingReviewAdmin(admin.ModelAdmin):
     list_display = ['user', 'product', 'rating', 'date']
     list_filter = ['rating']
     search_fields = ['product_name']
+
+
+admin.site.register(Cart)
+admin.site.register(WishList)

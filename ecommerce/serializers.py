@@ -39,6 +39,7 @@ class AddToCartSerializer(serializers.HyperlinkedModelSerializer):
         fields = '__all__'
 
 
+
 class ViewMyCartSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.ReadOnlyField(source='user.email')
     url = serializers.HyperlinkedIdentityField(view_name='ecommerce:editcart-detail')
@@ -55,4 +56,9 @@ class EditCartSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Cart
+        fields = '__all__'
+
+class WishListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WishList
         fields = '__all__'
