@@ -12,9 +12,10 @@ router.register('view-add-rating-review', views.RatingReviewViewSet, basename='v
 router.register('add-cart', views.CartViewSet, basename='viewaddcart')
 router.register('view-my-cart', views.ViewMyCartViewSet, basename='viewmycart')
 router.register('edit-cart', views.EditCartViewSet, basename='editcart')
+router.register('WishList', views.AddToWishlist, basename='wishlist')
 
 urlpatterns = [
     path('', include(router.urls)),
     path('product-rating-review/<int:id>', views.ProductRatingReviewAPI.as_view(), name='productratingreview'),
-
+    path('cart-total-price/', views.UpdatePriceView.as_view(), name='cart-total'),
 ]

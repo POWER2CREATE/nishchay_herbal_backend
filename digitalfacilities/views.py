@@ -111,7 +111,10 @@ class VisitingCardAPI(APIView):
 
     def get(self, request, format=None):
         ins = self.get_object(request.user)
-        queryset = DigitalVisitingCard.objects.get(user=request.user)
+        try:
+            queryset = DigitalVisitingCard.objects.get(user=request.user)
+        except DigitalVisitingCard.DoesNotExist:
+            raise Http404
         serializer = self.serializer_class(queryset)
         return Response(serializer)
 

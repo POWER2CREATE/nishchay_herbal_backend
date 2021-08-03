@@ -54,3 +54,14 @@ class Order(models.Model):
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
     date = models.DateField(auto_now_add=True)
     status = models.CharField(max_length=50)
+
+    def __str__(self, request):
+        return self.status + " " + self.user
+
+class WishList(models.Model):
+    user = models.ForeignKey('core.User', on_delete=models.PROTECT)
+    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    date = models.DateField(auto_now_add=True)
+
+    def __str__(self, request):
+        return self.user + self.product
