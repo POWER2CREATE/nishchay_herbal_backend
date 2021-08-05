@@ -43,17 +43,23 @@ class Cart(models.Model):
     user = models.ForeignKey('core.User', on_delete=models.PROTECT)
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
     quantity = models.PositiveIntegerField()
-    # price = models.IntegerField()
 
     def __str__(self):
         return str(self.user)
+
+STATUS_CHOICES = (
+    ('Ordered','Ordered'),
+    ('Delivered', 'Delivered'),
+    ('OutForDelivery','OutForDelivery'),
+    ('Canceled', 'Canceled'),
+)
 
 
 class Order(models.Model):
     user = models.ForeignKey('core.User', on_delete=models.PROTECT)
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
     date = models.DateField(auto_now_add=True)
-    status = models.CharField(max_length=50)
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='Ordered')
 
     def __str__(self, request):
         return self.status + " " + self.user

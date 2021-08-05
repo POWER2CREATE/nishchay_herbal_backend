@@ -19,3 +19,4 @@ class RatingReviewAdmin(admin.ModelAdmin):
 
 admin.site.register(Cart)
 admin.site.register(WishList)
+admin.site.register(Order)
