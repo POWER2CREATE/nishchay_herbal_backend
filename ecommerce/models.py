@@ -43,7 +43,7 @@ class Cart(models.Model):
     user = models.ForeignKey('core.User', on_delete=models.PROTECT)
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
     quantity = models.PositiveIntegerField()
-    price = models.IntegerField()
+    # price = models.IntegerField()
 
     def __str__(self):
         return str(self.user)

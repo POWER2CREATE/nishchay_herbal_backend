@@ -79,7 +79,10 @@ class CartViewSet(viewsets.ModelViewSet):
         if Cart.objects.filter(product=request.data.get('product'), user=request.user).exists():
             return Response({"ALREADY_EXIST": "Item Already Exists in Cart"}, status=400)
 
-        if not Product.objects.filter(product_name=request.data.get('product')).in_stock:
+        # print(request.data.get('product'))
+        pro = Product.objects.get(id=request.data.get('product'))
+        print(pro.in_stock)
+        if not pro.in_stock:
             return Response({"OUT_OF_STOCK": "Item currently not available in Stock"}, status=400)
 
         serializer = self.get_serializer(data=request.data)
