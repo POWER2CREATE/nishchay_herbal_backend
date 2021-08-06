@@ -11,6 +11,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.views import APIView
 from django.http import Http404
 from django.core.exceptions import ObjectDoesNotExist
+from rest_framework import viewsets
 # from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
@@ -81,7 +82,7 @@ class CartViewSet(viewsets.ModelViewSet):
 
         # print(request.data.get('product'))
         pro = Product.objects.get(id=request.data.get('product'))
-        print(pro.in_stock)
+        # print(pro.in_stock)
         if not pro.in_stock:
             return Response({"OUT_OF_STOCK": "Item currently not available in Stock"}, status=400)
 
@@ -188,6 +189,51 @@ class DelWishListItem(APIView):
         try:
             return WishList.objects.get(id=pk)
         except WishList.DoesNotExist:
+            raise Http404
+    def get(self, request, pk, format=None):
+        snippet = self.get_object(pk)
+        serializer = self.serializer_class(snippet)
+        return Response(serializer.data)
+
+    def delete(self, request, pk, format=None):
+        queryset = self.get_object(pk)
+        queryset.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class OrderNow(viewsets.ModelViewSet):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    permission_classes = [permissions.IsAuthenticated, IsCustomer]
+
+    def list(self, request, *args, **kwargs):
+        try:
+            queryset = self.queryset.filter(user=request.user)
+        except Order.DoesNotExist:
+            return Response({"DOESNT_EXIST": "No object in order list"}, status=402)
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data, status=200)
+
+    def post(self, request, *args, **kwargs):
+        
+        if request.data['user'] is None:
+            request.data['user'] = request.user
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class OrderDel(APIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    permission_classes = [permissions.IsAuthenticated, IsCustomer]
+
+    def get_object(self, pk):
+        try:
+            return Order.objects.get(id=pk)
+        except Order.DoesNotExist:
             raise Http404
     def get(self, request, pk, format=None):
         snippet = self.get_object(pk)

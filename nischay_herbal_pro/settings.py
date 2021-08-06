@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'digitalfacilities',
     'ecommerce',
     'vendor',
+    'blog',
 ]
 
 MIDDLEWARE = [
