@@ -8,7 +8,7 @@ from core.models import User
 from core.permissions import *
 from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
-
+from django.db.models import Q
 
 # Create your views here.
 
@@ -28,6 +28,8 @@ class VendorViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
+    
+
     def create(self, request, *args, **kwargs):
 
         if request.user.is_customer is False:
@@ -38,10 +40,24 @@ class VendorViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=200)
 
 
-class ViewVendorViewSet(viewsets.ReadOnlyModelViewSet):
+class ViewVendorViewSet(viewsets.ModelViewSet):
     queryset = Vendor.objects.all()
     serializer_class = VendorSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        try:
+            user = User.objects.get(id=self.request.user.id)
+        except ObjectDoesNotExist:
+            return Response({"DOES_NOT_EXIST": "User Does not exist"}, status=400)
+        queryset = self.queryset
+        category = self.request.query_params.get('category', None)
+        # print(category)
+        if category is not None:
+            queryset = queryset.filter(Q(category__icontains=category))
+
+        return queryset
+
 
 
 """class BusinessInformationViewSet(viewsets.ModelViewSet):
