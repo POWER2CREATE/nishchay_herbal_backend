@@ -20,5 +20,5 @@ class Post(models.Model):
     publish_date = models.DateTimeField(blank=True, null=True)
     published = models.BooleanField(default=False)
 
-    author = models.ForeignKey('core.User', on_delete=models.PROTECT)
+    user = models.ForeignKey('core.User', on_delete=models.PROTECT)
     tags = models.ManyToManyField(Tag, blank=True)
