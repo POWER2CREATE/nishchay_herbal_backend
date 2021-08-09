@@ -13,7 +13,6 @@ class PostAdmin(admin.ModelAdmin):
         "id",
         "title",
         "subtitle",
-        "slug",
         "publish_date",
         "published",
     )
@@ -24,21 +23,13 @@ class PostAdmin(admin.ModelAdmin):
     list_editable = (
         "title",
         "subtitle",
-        "slug",
         "publish_date",
         "published",
     )
     search_fields = (
         "title",
         "subtitle",
-        "slug",
         "body",
     )
-    prepopulated_fields = {
-        "slug": (
-            "title",
-            "subtitle",
-        )
-    }
     date_hierarchy = "publish_date"
     save_on_top = True

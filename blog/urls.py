@@ -7,4 +7,5 @@ app_name = 'blog'
 
 urlpatterns = [
     path('bloglistandcreate/', PostCreateAndListView.as_view({'get': 'list'}), name='bloglistandcreate'),
+    path('blogdeleteUpdate/<int:pk>/', BlogDelUpdate.as_view(), name='blogdeleteview'),
 ]
