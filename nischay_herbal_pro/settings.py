@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'ecommerce',
     'vendor',
     'blog',
+    'coupons',
 ]
 
 MIDDLEWARE = [

@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
+# from rest_framework import viewsets, permissions
 from rest_framework import viewsets, permissions, generics
 from rest_framework.response import Response
 from .serializers import *
@@ -152,7 +153,6 @@ class UpdatePriceView(APIView):
         content = {'total_price':total}
         return Response(content)
 
-from rest_framework import viewsets, permissions
 
 class AddToWishlist(APIView):
     queryset = WishList.objects.all()

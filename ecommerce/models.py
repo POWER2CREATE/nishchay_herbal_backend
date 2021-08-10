@@ -1,4 +1,5 @@
 from django.db import models
+from coupons import models as couponmodel
 
 # Create your models here.
 
@@ -59,15 +60,16 @@ class Order(models.Model):
     user = models.ForeignKey('core.User', on_delete=models.PROTECT)
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
     date = models.DateField(auto_now_add=True)
+    # coupon = models.OneToOneField(couponmodel.Coupon, on_delete=models.CASCADE, null=True)
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='Ordered')
 
-    def __str__(self, request):
-        return self.status + " " + self.user
+    def __str__(self):
+        return self.status + " " + str(self.user)
 
 class WishList(models.Model):
     user = models.ForeignKey('core.User', on_delete=models.PROTECT)
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
     date = models.DateField(auto_now_add=True)
 
-    def __str__(self, request):
-        return self.user + self.product
+    def __str__(self):
+        return self.user 
