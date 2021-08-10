@@ -32,6 +32,7 @@ urlpatterns = [
     path('digital-facilities/', include('digitalfacilities.urls'), name='digital-facilities'),
     path('vendor/', include('vendor.urls'), name='vendor'),
     path('blog/', include('blog.urls'), name='blog'),
+    path('coupon/', include('coupons.urls'), name='coupon'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL,
